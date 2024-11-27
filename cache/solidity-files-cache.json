@@ -2,12 +2,13 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/rikulauttia/UTU/BlockchainApp/contracts/Marketplace.sol": {
-      "lastModificationDate": 1732713035548,
-      "contentHash": "7856860abffd65f4ccfbe7155ef966ce",
+      "lastModificationDate": 1732717721889,
+      "contentHash": "c7ce7087b976d09ed1edd6525331fd22",
       "sourceName": "contracts/Marketplace.sol",
       "solcConfig": {
-        "version": "0.8.17",
+        "version": "0.8.27",
         "settings": {
+          "evmVersion": "paris",
           "optimizer": {
             "enabled": false,
             "runs": 200
@@ -30,7 +31,7 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.8.17"
+        "^0.8.27"
       ],
       "artifacts": [
         "Marketplace"

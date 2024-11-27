@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.27;
 
 contract Marketplace {
     struct Product {
@@ -29,48 +29,50 @@ contract Marketplace {
         address buyer
     );
 
-    function createProduct(string memory _name, uint _price) public {
-        require(bytes(_name).length > 0, "Product name is required");
-        require(_price > 0, "Price must be greater than zero");
+    function createProduct(string memory name, uint price) public {
+        require(bytes(name).length > 0, "Product name is required");
+        require(price > 0, "Price must be greater than zero");
 
         productCount++;
         products[productCount] = Product(
             productCount,
-            _name,
-            _price,
+            name,
+            price,
             payable(msg.sender),
             address(0)
         );
 
         emit ProductCreated(
             productCount,
-            _name,
-            _price,
+            name,
+            price,
             msg.sender,
             address(0)
         );
     }
 
-    function purchaseProduct(uint _id) public payable {
-        Product memory _product = products[_id];
-        address payable _seller = _product.seller;
+    function purchaseProduct(uint id) public payable {
+        Product storage product = products[id];
+        address payable seller = product.seller;
 
-        require(_product.id > 0 && _product.id <= productCount, "Invalid product ID");
-        require(msg.value >= _product.price, "Insufficient Ether");
-        require(_product.buyer == address(0), "Product already sold");
-        require(_seller != msg.sender, "Seller cannot buy their own product");
+        require(product.id > 0 && product.id <= productCount, "Invalid product ID");
+        require(msg.value >= product.price, "Insufficient Ether");
+        require(product.buyer == address(0), "Product already sold");
+        require(seller != msg.sender, "Seller cannot buy their own product");
 
-        _product.buyer = msg.sender;
-        products[_id] = _product;
+        // Update state first
+        product.buyer = msg.sender;
 
-        _seller.transfer(msg.value);
-
+        // Emit event before external interaction
         emit ProductPurchased(
-            _product.id,
-            _product.name,
-            _product.price,
-            _seller,
+            product.id,
+            product.name,
+            product.price,
+            seller,
             msg.sender
         );
+
+    // External interaction (transfer Ether)
+    seller.transfer(msg.value);
     }
 }

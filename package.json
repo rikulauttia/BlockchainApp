@@ -1,21 +1,21 @@
 {
   "name": "blockchainapp",
   "version": "1.0.0",
+  "description": "A blockchain application with Hardhat setup.",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.js --network goerli"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
-    "chai": "^5.1.2",
+    "chai": "^4.3.4",
     "dotenv": "^16.4.5",
     "ethereum-waffle": "^4.0.10",
     "ethers": "^5.7.2",
