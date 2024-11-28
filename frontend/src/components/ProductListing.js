@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { ethers } from "ethers";
+// Updated imports for ethers v6
+import { formatEther, ZeroAddress } from "ethers";
 
+// Import the function to get the Marketplace contract
 import getMarketplaceContract from "../ethereum/Marketplace";
 
 const ProductListing = () => {
@@ -9,25 +11,37 @@ const ProductListing = () => {
 
   useEffect(() => {
     const loadProducts = async () => {
-      const contract = getMarketplaceContract();
-      const productCount = await contract.productCount();
-      const productsArray = [];
-      for (let i = 1; i <= productCount; i++) {
-        const product = await contract.products(i);
-        productsArray.push(product);
+      try {
+        const contract = await getMarketplaceContract();
+        const productCount = await contract.productCount();
+
+        const productsArray = [];
+        for (let i = 1; i <= productCount; i++) {
+          const product = await contract.products(i);
+          productsArray.push(product);
+        }
+
+        setProducts(productsArray);
+      } catch (error) {
+        console.error("Error loading products:", error.message);
       }
-      setProducts(productsArray);
     };
     loadProducts();
   }, []);
 
   const buyProduct = async (product) => {
-    const contract = getMarketplaceContract();
-    const transaction = await contract.purchaseProduct(product.id, {
-      value: product.price.toString(),
-    });
-    await transaction.wait();
-    window.location.reload();
+    try {
+      const contract = await getMarketplaceContract();
+      const transaction = await contract.purchaseProduct(product.id, {
+        value: product.price,
+      });
+      await transaction.wait();
+      alert("Product purchased successfully!");
+      window.location.reload(); // Reload the page to refresh product status
+    } catch (error) {
+      console.error("Error buying product:", error.message);
+      alert("Failed to purchase product. Check console for more details.");
+    }
   };
 
   return (
@@ -36,8 +50,8 @@ const ProductListing = () => {
       <ul>
         {products.map((product, idx) => (
           <li key={idx}>
-            {product.name} - {ethers.utils.formatEther(product.price)} ETH
-            {product.buyer === ethers.constants.AddressZero && (
+            {product.name} - {formatEther(product.price)} ETH
+            {product.buyer === ZeroAddress && (
               <button onClick={() => buyProduct(product)}>Buy</button>
             )}
           </li>

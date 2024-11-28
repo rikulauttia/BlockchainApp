@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
-import { ethers } from "ethers";
+// Updated imports for ethers v6
+import { parseEther } from "ethers";
 
+// Import the function to get the Marketplace contract
 import getMarketplaceContract from "../ethereum/Marketplace";
 
 const Dashboard = () => {
@@ -10,14 +12,20 @@ const Dashboard = () => {
 
   const createProduct = async (e) => {
     e.preventDefault();
-    const contract = getMarketplaceContract();
-    const transaction = await contract.createProduct(
-      name,
-      ethers.utils.parseEther(price)
-    );
-    await transaction.wait();
-    setName("");
-    setPrice("");
+    try {
+      const contract = getMarketplaceContract(); // Fetch the Marketplace contract instance
+      const transaction = await contract.createProduct(
+        name,
+        parseEther(price) // Use `parseEther` from ethers v6
+      );
+      await transaction.wait(); // Wait for the transaction to be mined
+      setName(""); // Reset the name input field
+      setPrice(""); // Reset the price input field
+      alert("Product created successfully!"); // Notify the user of success
+    } catch (error) {
+      console.error("Error creating product:", error);
+      alert("Failed to create product. Check console for more details.");
+    }
   };
 
   return (

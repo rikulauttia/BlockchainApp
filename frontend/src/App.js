@@ -8,7 +8,12 @@ function App() {
   useEffect(() => {
     const connectWallet = async () => {
       if (window.ethereum) {
-        await window.ethereum.request({ method: "eth_requestAccounts" });
+        try {
+          // Request account access if needed
+          await window.ethereum.request({ method: "eth_requestAccounts" });
+        } catch (error) {
+          console.error("User denied wallet connection:", error);
+        }
       } else {
         alert("Please install MetaMask to use this DApp!");
       }
